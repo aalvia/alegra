@@ -158,6 +158,7 @@ export default {
       this.currentTab = tab;
     },
     fetchSellersData() {
+      this.loading = true;
       const options = {
         method: "GET",
         headers: {
@@ -170,10 +171,12 @@ export default {
       fetch("https://api.alegra.com/api/v1/sellers", options)
         .then((response) => response.json())
         .then((response) => {
-          // Guardar los vendedores en sellersOfAlegra
+         
           this.sellersOfAlegra = response;
         })
-        .catch((err) => console.error(err));
+        .catch((err) => console.error(err)).finally(() => {
+          this.loading = false; 
+        };
     },
   },
   components: {
@@ -280,5 +283,18 @@ button.activeTab {
 
 .align-right {
   margin-left: auto;
+}
+.loading-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(255, 255, 255, 0.7); /* Fondo semi-transparente */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  z-index: 999; /* Z-index alto para superponerse a otros elementos */
 }
 </style>
