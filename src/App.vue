@@ -1,15 +1,6 @@
 <template>
   <div class="f-content">
-    <div id="mySidenav" class="sidenav" :style="{ width: menuWidth + 'px' }">
-      <a href="javascript:void(0)" class="closebtn" @click="closeNav">×</a>
-      <a href="#">Opción 1</a>
-      <a href="#">Opción 2</a>
-      <a href="#">Opción 3</a>
-    </div>
-
-    <!-- <div id="main">
-  <span style="font-size:30px;cursor:pointer" @click="openNav">Menú</span>
-</div> -->
+  
     <div class="titulo">
       <h1>Imágenes del mundo</h1>
     </div>
@@ -32,9 +23,8 @@
           <button
             @click="changeTab(3)"
             :class="{ activeTab: currentTab === 3 }"
-           
           >
-           <font-awesome-icon :icon="['fas', 'rectangle-list']" />
+            <font-awesome-icon :icon="['fas', 'rectangle-list']" />
           </button>
           <button
             @click="changeTab(4)"
@@ -51,7 +41,7 @@
           :pointsOf="pointsOf"
           :imagesOfSellers="imagesOfSellers"
           @updatePoints="updatePoints"
-          @checkWinner="checkWinner" 
+          @checkWinner="checkWinner"
           @updateImageOfSellers="updateImageOfSellers"
         />
 
@@ -59,19 +49,16 @@
           v-if="currentTab === 2 && sellersOfAlegra.length > 0"
           :sellersOfAlegra="sellersOfAlegra"
           :pointsOf="pointsOf"
-         
         />
 
         <BillsOfAlegra
           v-if="currentTab === 3 && sellersOfAlegra.length > 0"
           :sellersOfAlegra="sellersOfAlegra"
           :pointsOf="pointsOf"
-        
         />
 
         <GestionOfSellers
           v-if="currentTab === 4 && sellersOfAlegra.length > 0"
-        
         />
       </div>
     </div>
@@ -82,30 +69,28 @@
 import Swal from "sweetalert2";
 import ImageSearch from "./components/ImageSearch.vue";
 import AlegraSellers from "./components/AlegraSellers.vue";
-import BillsOfAlegra  from "./components/BillsOfAlegra.vue";
-import GestionOfSellers from "./components/GestionOfSellers.vue"
+import BillsOfAlegra from "./components/BillsOfAlegra.vue";
+import GestionOfSellers from "./components/GestionOfSellers.vue";
 export default {
   data() {
     return {
       menuWidth: 0,
       currentTab: 1,
-      sellersOfAlegra: [], imagesOfSellers: []
+      sellersOfAlegra: [],
+      imagesOfSellers: [],
     };
   },
   created() {
-    // Código que se ejecuta al inicio del componente empleados
     this.fetchSellersData();
   },
   methods: {
     updateImageOfSellers(newArray) {
       console.log("updateimage");
       this.imagesOfSellers = newArray;
-      /*  this.pointsOf = newPoints; */
     },
     updatePoints(newPoints, index) {
       console.log("newPoints", newPoints);
       this.sellersOfAlegra[index].points = newPoints;
-      /*  this.pointsOf = newPoints; */
     },
     checkWinner(index) {
       console.log("checkwin");
@@ -120,11 +105,8 @@ export default {
         }
       }
       this.sellersOfAlegra[index].pointsWinner = totalPoints;
-
-       // Obtener la fecha actual en formato YYYY-MM-DD
-  const currentDate = new Date();
-  const formattedDate = currentDate.toISOString().split('T')[0];
-
+      const currentDate = new Date();
+      const formattedDate = currentDate.toISOString().split("T")[0];
 
       Swal.fire({
         icon: "success",
@@ -141,7 +123,14 @@ export default {
           },
           body: JSON.stringify({
             client: { id: 1 },
-            items: [{ id: 1, name: "imagenes", quantity: this.sellersOfAlegra[index].pointsWinner/3, price: 3 }],
+            items: [
+              {
+                id: 1,
+                name: "imagenes",
+                quantity: this.sellersOfAlegra[index].pointsWinner / 3,
+                price: 3,
+              },
+            ],
             dueDate: formattedDate,
             date: formattedDate,
             seller: this.sellersOfAlegra[index].id,
@@ -189,7 +178,9 @@ export default {
   },
   components: {
     ImageSearch,
-    AlegraSellers,BillsOfAlegra,GestionOfSellers
+    AlegraSellers,
+    BillsOfAlegra,
+    GestionOfSellers,
   },
 };
 </script>

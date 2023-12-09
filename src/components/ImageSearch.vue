@@ -1,28 +1,34 @@
 <template>
   <h1>Ingrese imagen que necesita</h1>
 
-  <input type="text" id="searchInput" placeholder="Ingresar solicitud de imagen" />
+  <input
+    type="text"
+    id="searchInput"
+    placeholder="Ingresar solicitud de imagen"
+  />
   <button class="b-Search" @click="searchImages">Buscar</button>
 
-  <div> 
+  <div>
     <div v-if="imagesOfSellers.length > 0">
       <div
         class="imageSelector"
         v-for="(seller, index) in sellersOfAlegra"
         :key="index"
       >
-        <img class="sellerImage" :src="imagesOfSellers[index]" alt="" @click="showImage(index)" />
+        <img
+          class="sellerImage"
+          :src="imagesOfSellers[index]"
+          alt=""
+          @click="showImage(index)"
+        />
         <br />
         <span class="s-points" v-if="seller.points">{{ seller.points }}</span>
-        <button @click="comprar(index)">Comprar</button>
+        <button @click="selectImgPoints(index)">Seleccionar</button>
         <br /><span> {{ seller.name }}</span>
       </div>
     </div>
   </div>
   <div id="imageResults"></div>
-  <!-- {{sellersOfAlegra}}
-  
-{{pointsOf}} -->
 </template>
 
 <script>
@@ -34,8 +40,8 @@ export default {
       default: () => [],
     },
     pointsOf: {
-      type: Object, // Cambiado a Object
-      default: () => ({ value: 0 }), // Ahora es un objeto con una propiedad "value"
+      type: Object,
+      default: () => ({ value: 0 }),
     },
     imagesOfSellers: {
       type: Array,
@@ -51,8 +57,8 @@ export default {
   methods: {
     searchImages() {
       this.imagesOfSellersTemp = [];
-      const apiKey = "AIzaSyCmvJrEP-QE3P_KRkAqfqeLZ47lH_OXvl0"; 
-      const cx = "01d3f4967ced54f34"; 
+      const apiKey = "AIzaSyCmvJrEP-QE3P_KRkAqfqeLZ47lH_OXvl0";
+      const cx = "01d3f4967ced54f34";
       const searchQuery = document.getElementById("searchInput").value;
       const apiUrl = `https://www.googleapis.com/customsearch/v1?q=${searchQuery}&key=${apiKey}&cx=${cx}&searchType=image`;
 
@@ -67,15 +73,11 @@ export default {
 
               this.imagesOfSellersTemp.push(item.link);
 
-              imgElement.alt = item.title;
-
               const linkElement = document.createElement("a");
-              linkElement.href = item.link;
-              linkElement.target = "_blank";
-              linkElement.appendChild(imgElement);
 
-              /*   imageResults.appendChild(linkElement); */
-            });  this.$emit("updateImageOfSellers", this.imagesOfSellersTemp);
+              linkElement.target = "_blank";
+            });
+            this.$emit("updateImageOfSellers", this.imagesOfSellersTemp);
           } else {
             imageResults.innerHTML = "No se encontraron imágenes.";
           }
@@ -84,31 +86,26 @@ export default {
           console.error("Error en la solicitud:", error);
         });
     },
- showImage(index) {
-      // Muestra la imagen al 100% en SweetAlert
+    showImage(index) {
       Swal.fire({
         imageUrl: this.imagesOfSellers[index],
-        imageAlt: 'Imagen del vendedor',
+        imageAlt: "Imagen del vendedor",
       });
     },
-    comprar(index) {
-      console.log("ejecutando");
+    selectImgPoints(index) {
       let newPoints = 0;
-      // Aumentar la puntuación del vendedor al hacer clic en el botón "comprar"
+
       if (
         this.sellersOfAlegra[index] &&
         typeof this.sellersOfAlegra[index].points === "number"
       ) {
-        // Aumentar la puntuación del vendedor al hacer clic en el botón "comprar"
         newPoints = this.sellersOfAlegra[index].points + 3;
       } else {
         newPoints = 3;
       }
 
-     
-
       this.$emit("updatePoints", newPoints, index);
-      if (newPoints >= 20){
+      if (newPoints >= 20) {
         this.$emit("checkWinner", index);
       }
     },
@@ -118,7 +115,7 @@ export default {
 </script>
 
 <style scoped>
-.b-Search{
+.b-Search {
   margin-left: 3px;
 }
 .sellerImage {
@@ -174,11 +171,8 @@ button {
   height: 100px;
   object-fit: cover;
   border: 0px solid #ddd;
-margin-bottom: 3px;
+  margin-bottom: 3px;
 }
-
-
-
 
 #imageResults {
   margin-top: 20px;
@@ -190,7 +184,4 @@ body {
   transform: scale(1.05);
 }
 </style>
-<style scoped>
-
-
-</style>
+<style scoped></style>

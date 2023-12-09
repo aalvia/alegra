@@ -1,7 +1,8 @@
 <template>
   <div class="invoice-results">
-    <h2>Resultados de la consulta</h2>
-    <ul>
+    <h2>Facturas</h2>
+    <div v-if="loading" class="loading-indicator">Cargando facturas...</div>
+    <ul v-if="!loading">
       <li v-for="(invoice, index) in invoices" :key="index">
         <div class="invoice-card">
           <div class="invoice-header">
@@ -14,20 +15,20 @@
               <br />
               <strong>ID Cliente:</strong> {{ invoice.client.id }}
               <br />
-              <strong>Identificación:</strong> {{ invoice.client.identification }}
+              <strong>Identificación:</strong>
+              {{ invoice.client.identification }}
             </div>
             <div class="items">
               <strong>Items:</strong>
               <ul>
                 <li v-for="(item, itemIndex) in invoice.items" :key="itemIndex">
-                  {{ item.name }} - Precio: ${{ item.price }} - Cantidad: {{ item.quantity }}
+                  {{ item.name }} - Precio: ${{ item.price }} - Cantidad:
+                  {{ item.quantity }}
                 </li>
               </ul>
             </div>
           </div>
-          <div class="total">
-            <strong>Total:</strong> ${{ invoice.total }}
-          </div>
+          <div class="total"><strong>Total:</strong> ${{ invoice.total }}</div>
         </div>
       </li>
     </ul>
@@ -39,6 +40,7 @@ export default {
   data() {
     return {
       invoices: [],
+      loading: false,
     };
   },
   mounted() {
@@ -46,25 +48,37 @@ export default {
   },
   methods: {
     fetchInvoices() {
+      this.loading = true;
       const options = {
-        method: 'GET',
+        method: "GET",
         headers: {
-          accept: 'application/json',
-          authorization: 'Basic YW5keS5hbHZpYS5pbmdAb3V0bG9vay5jb206NjczZGYxNGJjMDI4NTFmN2U1NzU6YWxlZ3JhYTI='
-        }
+          accept: "application/json",
+          authorization:
+            "Basic YW5keS5hbHZpYS5pbmdAb3V0bG9vay5jb206NjczZGYxNGJjMDI4NTFmN2U1NzU6YWxlZ3JhYTI=",
+        },
       };
 
-      fetch('https://api.alegra.com/api/v1/invoices', options)
-        .then(response => response.json())
-        .then(response => {
+      fetch("https://api.alegra.com/api/v1/invoices", options)
+        .then((response) => response.json())
+        .then((response) => {
           this.invoices = response;
         })
-        .catch(err => console.error(err));
+        .catch((err) => console.error(err))
+        .finally(() => {
+          this.loading = false;
+        });
     },
     formatDate(dateString) {
-      const options = { year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric' };
+      const options = {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+        hour: "numeric",
+        minute: "numeric",
+        second: "numeric",
+      };
       const date = new Date(dateString);
-      return date.toLocaleDateString('es-ES', options);
+      return date.toLocaleDateString("es-ES", options);
     },
   },
 };
@@ -89,7 +103,7 @@ ul {
 }
 
 .invoice-header {
-  background-color: #007BFF;
+  background-color: #007bff;
   color: #fff;
   padding: 10px;
   display: flex;
@@ -119,8 +133,16 @@ ul {
 
 .total {
   padding: 10px;
-  background-color: #28A745;
+  background-color: #28a745;
   color: #fff;
   text-align: right;
+}
+.loading-indicator {
+  margin: 20px 0;
+  padding: 10px;
+  background-color: #c0e7ea;
+  color: #1d30a8;
+  border: 1px solid #160eff;
+  border-radius: 5px;
 }
 </style>
