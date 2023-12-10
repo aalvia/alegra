@@ -1,0 +1,2 @@
+Adjunto link del proyecto desplegado
+https://main--alegra-reto-andy.netlify.app/
