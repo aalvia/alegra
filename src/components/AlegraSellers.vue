@@ -1,6 +1,5 @@
 <template>
-  <div>
-    <h2>Vendedores - Carrera Actual</h2>
+ 
     <ul>
       <li
         v-for="seller in sellersOfAlegra"
@@ -20,7 +19,7 @@
         </div>
       </li>
     </ul>
-  </div>
+ 
 </template>
 
 <script>

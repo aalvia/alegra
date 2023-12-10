@@ -45,17 +45,22 @@
           @updateImageOfSellers="updateImageOfSellers"
         />
 
-        <AlegraSellers
+ <div  v-if="currentTab === 2 ">
+    <h2>Vendedores - Carrera Actual</h2>
+      <AlegraSellers
           v-if="currentTab === 2 && sellersOfAlegra.length > 0"
           :sellersOfAlegra="sellersOfAlegra"
           :pointsOf="pointsOf"
         />
+     </div>
+       
 
         <BillsOfAlegra
           v-if="currentTab === 3 && sellersOfAlegra.length > 0"
           :sellersOfAlegra="sellersOfAlegra"
           :pointsOf="pointsOf"
         />
+
 
         <GestionOfSellers
           v-if="currentTab === 4 && sellersOfAlegra.length > 0"
@@ -142,7 +147,6 @@ export default {
           .then((response) => console.log(response))
           .catch((err) => console.error(err));
 
-        // Restablecer puntos a 0
         this.sellersOfAlegra.forEach((seller) => {
           seller.points = 0;
         });
