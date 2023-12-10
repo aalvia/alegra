@@ -39,10 +39,6 @@ export default {
       type: Array,
       default: () => [],
     },
-    pointsOf: {
-      type: Object,
-      default: () => ({ value: 0 }),
-    },
     imagesOfSellers: {
       type: Array,
       default: () => [],

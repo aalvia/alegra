@@ -1,10 +1,8 @@
 <template>
   <div class="f-content">
-  
     <div class="titulo">
       <h1>Imágenes del mundo</h1>
     </div>
-
     <div>
       <div class="container">
         <div class="tabs">
@@ -38,29 +36,36 @@
         <ImageSearch
           v-if="currentTab === 1 && sellersOfAlegra.length > 0"
           :sellersOfAlegra="sellersOfAlegra"
-          :pointsOf="pointsOf"
           :imagesOfSellers="imagesOfSellers"
           @updatePoints="updatePoints"
           @checkWinner="checkWinner"
           @updateImageOfSellers="updateImageOfSellers"
         />
 
- <div  v-if="currentTab === 2 ">
-    <h2>Vendedores - Carrera Actual</h2>
-      <AlegraSellers
-          v-if="currentTab === 2 && sellersOfAlegra.length > 0"
-          :sellersOfAlegra="sellersOfAlegra"
-          :pointsOf="pointsOf"
-        />
-     </div>
-       
+        <div v-if="currentTab === 2">
+          <h2>Vendedores - Carrera Actual</h2>
+          <AlegraSellers
+            v-if="currentTab === 2 && sellersOfAlegra.length > 0"
+            :sellersOfAlegra="sellersOfAlegra"
+          />
+        </div>
 
-        <BillsOfAlegra
+        <div
+          class="invoice-results"
           v-if="currentTab === 3 && sellersOfAlegra.length > 0"
-          :sellersOfAlegra="sellersOfAlegra"
-          :pointsOf="pointsOf"
-        />
-
+        >
+          <h2>Facturas</h2>
+          <div v-if="loading" class="loading-indicator">
+            Cargando facturas...
+          </div>
+          <div v-if="!loading">
+            <BillsOfAlegra
+              v-if="currentTab === 3 && sellersOfAlegra.length > 0"
+              :sellersOfAlegra="sellersOfAlegra"
+              :invoices="invoices"
+            />
+          </div>
+        </div>
 
         <GestionOfSellers
           v-if="currentTab === 4 && sellersOfAlegra.length > 0"
@@ -83,12 +88,35 @@ export default {
       currentTab: 1,
       sellersOfAlegra: [],
       imagesOfSellers: [],
+      invoices: [],
+      loading: false,
     };
   },
   created() {
     this.fetchSellersData();
   },
   methods: {
+    fetchInvoices() {
+      this.loading = true;
+      const options = {
+        method: "GET",
+        headers: {
+          accept: "application/json",
+          authorization:
+            "Basic YW5keS5hbHZpYS5pbmdAb3V0bG9vay5jb206NjczZGYxNGJjMDI4NTFmN2U1NzU6YWxlZ3JhYTI=",
+        },
+      };
+
+      fetch("https://api.alegra.com/api/v1/invoices", options)
+        .then((response) => response.json())
+        .then((response) => {
+          this.invoices = response;
+        })
+        .catch((err) => console.error(err))
+        .finally(() => {
+          this.loading = false;
+        });
+    },
     updateImageOfSellers(newArray) {
       console.log("updateimage");
       this.imagesOfSellers = newArray;
@@ -159,6 +187,9 @@ export default {
       this.menuWidth = 0;
     },
     changeTab(tab) {
+      if (tab == 3) {
+        this.fetchInvoices();
+      }
       this.currentTab = tab;
     },
     fetchSellersData() {
@@ -175,11 +206,11 @@ export default {
       fetch("https://api.alegra.com/api/v1/sellers", options)
         .then((response) => response.json())
         .then((response) => {
-         
           this.sellersOfAlegra = response;
         })
-        .catch((err) => console.error(err)).finally(() => {
-          this.loading = false; 
+        .catch((err) => console.error(err))
+        .finally(() => {
+          this.loading = false;
         });
     },
   },
@@ -204,7 +235,7 @@ export default {
 body {
   margin: 0;
   font-family: Arial, sans-serif;
-  overflow: hidden; /* Evita el desplazamiento del cuerpo al abrir el menú */
+  overflow: hidden; 
 }
 
 .sidenav {
@@ -262,7 +293,7 @@ body {
   border: 2px solid #ddd;
   border-radius: 10px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  min-height: 450px; /* Ajusta según sea necesario */
+  min-height: 450px;
   height: auto;
 }
 .tabs {
@@ -294,11 +325,19 @@ button.activeTab {
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(255, 255, 255, 0.7); /* Fondo semi-transparente */
+  background-color: rgba(255, 255, 255, 0.7);
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 20px;
-  z-index: 999; /* Z-index alto para superponerse a otros elementos */
+  z-index: 999; 
+}
+.loading-indicator {
+  margin: 20px 0;
+  padding: 10px;
+  background-color: #c0e7ea;
+  color: #1d30a8;
+  border: 1px solid #160eff;
+  border-radius: 5px;
 }
 </style>

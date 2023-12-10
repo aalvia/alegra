@@ -1,8 +1,5 @@
 <template>
-  <div class="invoice-results">
-    <h2>Facturas</h2>
-    <div v-if="loading" class="loading-indicator">Cargando facturas...</div>
-    <ul v-if="!loading">
+    <ul >
       <li v-for="(invoice, index) in invoices" :key="index">
         <div class="invoice-card">
           <div class="invoice-header">
@@ -31,43 +28,18 @@
           <div class="total"><strong>Total:</strong> ${{ invoice.total }}</div>
         </div>
       </li>
-    </ul>
-  </div>
+   </ul>
 </template>
 
 <script>
 export default {
-  data() {
-    return {
-      invoices: [],
-      loading: false,
-    };
-  },
-  mounted() {
-    this.fetchInvoices();
+   props: {
+    invoices: {
+      type: Array,
+      default: () => [],
+    },
   },
   methods: {
-    fetchInvoices() {
-      this.loading = true;
-      const options = {
-        method: "GET",
-        headers: {
-          accept: "application/json",
-          authorization:
-            "Basic YW5keS5hbHZpYS5pbmdAb3V0bG9vay5jb206NjczZGYxNGJjMDI4NTFmN2U1NzU6YWxlZ3JhYTI=",
-        },
-      };
-
-      fetch("https://api.alegra.com/api/v1/invoices", options)
-        .then((response) => response.json())
-        .then((response) => {
-          this.invoices = response;
-        })
-        .catch((err) => console.error(err))
-        .finally(() => {
-          this.loading = false;
-        });
-    },
     formatDate(dateString) {
       const options = {
         year: "numeric",
@@ -137,12 +109,5 @@ ul {
   color: #fff;
   text-align: right;
 }
-.loading-indicator {
-  margin: 20px 0;
-  padding: 10px;
-  background-color: #c0e7ea;
-  color: #1d30a8;
-  border: 1px solid #160eff;
-  border-radius: 5px;
-}
+
 </style>
