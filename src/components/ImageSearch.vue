@@ -9,6 +9,10 @@
   <button class="b-Search" @click="searchImages">Buscar</button>
 
   <div>
+     <div v-if="loading" class="loading-indicator">
+            Cargando...
+          </div>
+          <div v-if="!loading">
     <div v-if="imagesOfSellers.length > 0">
       <div
         class="imageSelector"
@@ -26,6 +30,7 @@
         <button @click="selectImgPoints(index)">Seleccionar</button>
         <br /><span> {{ seller.name }}</span>
       </div>
+    </div>
     </div>
   </div>
   <div id="imageResults"></div>
@@ -45,13 +50,13 @@ export default {
     },
   },
   data() {
-    return {
-      imagesOfSellersTemp: [],
+    return { 
+      imagesOfSellersTemp: [],loading: false,
     };
   },
 
   methods: {
-    searchImages() {
+    searchImages() {  this.loading = true;
       this.imagesOfSellersTemp = [];
       const apiKey = "AIzaSyCmvJrEP-QE3P_KRkAqfqeLZ47lH_OXvl0";
       const cx = "01d3f4967ced54f34";
@@ -80,6 +85,8 @@ export default {
         })
         .catch((error) => {
           console.error("Error en la solicitud:", error);
+        }).finally(() => {
+          this.loading = false;
         });
     },
     showImage(index) {
@@ -178,6 +185,14 @@ body {
 }
 .imageSelector:hover {
   transform: scale(1.05);
+}
+.loading-indicator {
+  margin: 20px 0;
+  padding: 10px;
+  background-color: #c0e7ea;
+  color: #1d30a8;
+  border: 1px solid #160eff;
+  border-radius: 5px;
 }
 </style>
 <style scoped></style>
